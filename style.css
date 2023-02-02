@@ -1,0 +1,83 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-size: 1.6rem;
+}
+
+.navbar {
+    color: white;
+    background-color: hsl(240, 100%, 20%);
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    padding: 2rem;
+}
+
+main {
+    margin-top: 4rem;
+    display: grid;
+    place-items: center;
+}
+.todos-app {
+    margin: 2rem 0;
+    width: 90%;
+    padding: 2rem;
+}
+.todoForm {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    width: 100%;
+    border: 1px solid gray;
+}
+.todoForm .input-group {
+    display: flex;
+    gap: 2rem;
+    width: 80%;
+}
+.todoForm input {
+    width: 70%;
+    height: 100%;
+    font-size: 2rem;
+}
+.todoForm label {
+    font-size: 2rem;
+    padding: 1rem;
+}
+.todo {
+    border: 1px solid gray;
+    margin: 2rem 0;
+    height: 10rem;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.btn {
+    padding: 1rem;
+    background-color: hsl(229, 100%, 75%);
+    color: white;
+    border: 0;
+    border-radius: 2px;
+    cursor: pointer;
+}
+.btn-remove {
+    background-color: hsl(5, 100%, 75%);
+}
+
+.todo-done {
+    background-color: gray;
+}
+
+.todo-done .btn-toggle {
+    background-color: hsl(0, 1%, 25%);
+}
