@@ -1,58 +1,23 @@
+// let arr = [4, 3, 10,{ content: "same", id: 1 }, 2, 1];
+// console.log(arr)
+// // filter:
+// let arrWithout10 = arr.filter((item) => item !== 10);
+// console.log("filter: no 10", arrWithout10);
 
-const state = {
-    todos: [],
-    title: "",
-    content: "",
-    appRunning: "y",
-    toggleTodo: "n",
-    wantRemoveTodo: "n",
-    toggleTodoId: null,
-    id: 1,
-    removeId: null,
-    addTodo(todo){
-        this.todos.push(todo)
-    },
-    changeTodo(id){
-        let toChangeTodo = this.todos.find(
-            (todo) => todo.id === id
-        );
-        toChangeTodo.done = !toChangeTodo.done;
-    },
-    removeTodo(id){
-        this.todos = this.todos.filter(
-            (todo) => todo.id !== id
-        );
-    }
-};
+// // map:
+// let arrX2 = arr.map((item) => item * 2);
+// console.log("map: X 2=", arrX2);
 
-function Todo(state) {
-    this.title = state.title;
-    this.content = state.content;
-    this.done = false;
-    this.id = state.id;
-    state.id++;
-}
+// // find:################
+// let find10 = arr.find((item) => item === 10);
+// console.log("find 10", find10);
 
-function runApp(state) {
-    while (state.appRunning === "y") {
-        state.title = prompt("title");
-        state.content = prompt("content");
-        state.addTodo(new Todo(state));
+// // change primitive doesnt work because only the value is changed:
+// find10 = 99;
+// // 10 didnt change
+// console.log("try change primitiv", arr);
 
-        state.toggleTodo = prompt("toggle a Todo: y/n");
-        state.wantRemoveTodo = prompt("remove a Todo: y/n");
-        if (state.wantRemoveTodo === "y") {
-            state.removeId = parseInt(prompt("remove id"));
-            state.removeTodo(state.removeId)
-        }
-        while (state.toggleTodo === "y") {
-            state.toggleTodoId = parseInt(prompt("enter a todo id"));
-            state.changeTodo(state.toggleTodoId )
-            state.toggleTodo = prompt("toggle another Todo todo: y/n");
-        }
-        state.appRunning = prompt("add another todo: y/n");
-    }
-    console.log(state.todos);
-}
-
-runApp(state);
+// change objects works because they copied by reference:
+// let findContent = arr.find((item) =>  item.id === 1);
+// findContent.content = "changed";
+// console.log("try change object", arr);
