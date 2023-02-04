@@ -26,7 +26,12 @@ const state = {
     },
     findTodo(id) {
         return this.data.todos.find((todo) => todo.id === id);
-    }
+    },
+    init() {
+        if (localStorage.getItem("stateData")) {
+            this.data = JSON.parse(localStorage.getItem("stateData"));
+        }
+    },
 };
 
 const app = {
@@ -36,7 +41,7 @@ const app = {
     ),
     todoInputElement: document.getElementById("todoInput"),
     todoFormElement: document.querySelector(".todoForm"),
-    save (){
+    save() {
         localStorage.setItem("stateData", JSON.stringify(state.data));
     },
     removeTodoHandel(id) {
@@ -71,23 +76,29 @@ const app = {
     },
     renderModal(content = null) {
         this.todoEditModalContainerElement.innerHTML = `<div class="todo-edit-modal ${
-            state.data.showModal && "todo-edit-modal--show"
-        }">
-    
-        <div class="todo">
-                <label for="todo-edit">Edit Todo:</label>
-                <input id="todo-edit" class="input-content" name="todo-edit" onchange="app.editTodoHandel(event)" value="${content}"/>
-                <div>
-                    <button class="btn btn-close" onclick="app.closeEditModal()">done</button>
+                state.data.showModal && "todo-edit-modal--show"
+            }">
+        
+            <div class="todo">
+                    <label for="todo-edit">Edit Todo:</label>
+                    <input id="todo-edit" class="input-content" name="todo-edit"
+                        onchange="app.editTodoHandel(event)"
+                        value="${content}"
+                    />
+                    <div>
+                        <button class="btn btn-close" onclick="app.closeEditModal()">done</button>
+                    </div>
                 </div>
-            </div>
-        </div>`;
+            </div>`;
     },
     renderForm(state) {
         this.todoFormElement.innerHTML = `<div class="input-group">
-        <label for="todoInput">Add Todo:</label>
-        <input type="text" id="todoInput" class="input-content" name="todoInput" value="${state.data.newContent}" onchange="app.changeInputHandel(event)"/>
-        </div>
+                <label for="todoInput">Add Todo:</label>
+                <input type="text" id="todoInput" class="input-content" name="todoInput"
+                    value="${state.data.newContent}" 
+                    onchange="app.changeInputHandel(event)"
+                />
+            </div>
             <button
                 id="addBtn"
                 name="addBtn"
@@ -100,10 +111,9 @@ const app = {
     renderTodos(state) {
         this.todosContainerElement.innerHTML = state.data.todos
             .map((todo) => {
-                return `<div class="todo ${todo.done && "todo-done"}">
+                return `<div class="todo ${todo.done && "todo-done"}" key="${todo.id}">
             <h2>${todo.content}</h2>
             <div class="btn-group">
-              
                 <button class="btn btn-toggle" onclick="app.toggleTodoIsDoneHandel(${
                     todo.id
                 })">&#10004;</button>
@@ -118,15 +128,12 @@ const app = {
             })
             .join("");
     },
-    init(state) {
-        if (localStorage.getItem("stateData")) {
-            state.data = JSON.parse(localStorage.getItem("stateData"));
-        }
-    },
+    
     render(state) {
         this.renderForm(state);
         this.renderTodos(state);
     }
 };
-app.init(state);
+
+state.init();
 app.render(state);
