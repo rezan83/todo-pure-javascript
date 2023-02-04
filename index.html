@@ -5,8 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="style.css" />
-        <script src="main1.js" defer></script>
-        <script src="main.js" defer></script>
+
         <title>Document</title>
     </head>
     <body>
@@ -16,43 +15,12 @@
 
         <main>
             <div class="todos-app">
-                <div class="todo-edit-modal">
-                    <div class="todo">
-                        <label for="todo-edit">Edit Todo:</label>
-
-                        <textarea id="todo-edit" name="todo-edit" rows="5" cols="33">
-                            content
-                        </textarea>
-                        <div>
-                            <button class="btn btn-close" onclick="closeEditModal()">done</button>
-                            <!-- <button class="btn btn-remove">X</button> -->
-                        </div>
-                    </div>
-                </div>
-                <form class="todoForm">
-                    <div class="input-group">
-                        <label for="todoInput">Add Todo:</label>
-                        <input type="text" id="todoInput" name="todoInput" />
-                    </div>
-                    <button name="addBtn" class="btn btn-add">+</button>
-                </form>
-                <div class="todos-container">
-                    <!-- <div class="todo">
-                        <h2>content</h2>
-                        <div>
-                            <button class="btn btn-toggle">done</button>
-                            <button class="btn btn-remove">X</button>
-                        </div>
-                    </div>
-                    <div class="todo todo-done">
-                        <h2>content</h2>
-                        <div>
-                            <button class="btn btn-toggle">done</button>
-                            <button class="btn btn-remove">X</button>
-                        </div>
-                    </div> -->
-                </div>
+                <div class="todo-edit-modal"></div>
+                <form class="todoForm"></form>
+                <div class="todos-container"></div>
             </div>
         </main>
+
+        <script src="main.js"></script>
     </body>
 </html>

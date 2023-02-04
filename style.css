@@ -43,10 +43,11 @@ main {
     gap: 2rem;
     width: 80%;
 }
-.todoForm input {
+.input-content {
     width: 70%;
     height: 100%;
     font-size: 2rem;
+    padding: 0 1rem;
 }
 .todoForm label {
     font-size: 2rem;
@@ -61,14 +62,20 @@ main {
     align-items: center;
     justify-content: space-between;
 }
-
+.btn-group {
+    display: grid;
+    grid-template: 1fr/1fr 1fr 1fr;
+    gap: 1rem;
+    padding: 0.5rem;
+}
 .btn {
-    padding: 1rem;
+    padding: 0.5rem 1rem;
     background-color: hsl(229, 100%, 75%);
     color: white;
     border: 0;
     border-radius: 2px;
     cursor: pointer;
+    font-size: 2rem;
 }
 .btn-remove {
     background-color: hsl(5, 100%, 75%);
@@ -93,8 +100,17 @@ main {
     padding: 2rem;
     display: none;
     place-items: center;
+    font-size: 1.8rem;
 }
 
 .todo-edit-modal .todo {
-    width: 80%;
+    display: grid;
+    grid-template: 1fr/1fr 6fr 2fr;
+    place-items: center;
+    gap: 1rem;
+    background-color: hsla(0, 0%, 90%, 0.8);
+}
+
+.todo-edit-modal .input-content {
+    width: 100%;
 }

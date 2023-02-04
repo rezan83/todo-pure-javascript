@@ -1,19 +1,13 @@
-const todoForm = document.querySelector(".todoForm");
-const todosContainer = document.querySelector(".todos-container");
-const todoEditModal = document.querySelector(".todo-edit-modal");
-const todoEdit = document.getElementById("todo-edit");
-
-const { todoInput, addBtn } = todoForm;
-
 const state = {
     countId: 1,
-    editTodo: null,
+    editableTodo: null,
+    newContent: "",
     todos: [
-        // { content: "Orange", done: false, id: -1 },
-        // { content: "Apple", done: true, id: 0 },
+        { content: "Orange", done: false, id: -1 },
+        { content: "Apple", done: true, id: 0 }
     ],
-    addTodo(todo) {
-        this.todos.unshift(todo);
+    addTodo() {
+        this.todos.unshift(this.createTodo(this.newContent));
         this.countId++;
     },
     removeTodo(id) {
@@ -23,68 +17,98 @@ const state = {
         let todo = this.findTodo(id);
         todo.done = !todo.done;
     },
-    // editTodo(id) {
-    //     let todo = this.findTodo(id);
-    //     console.log(todo);
-    // },
     findTodo(id) {
         return this.todos.find((todo) => todo.id === id);
     },
     createTodo(content) {
-        return { content: content, done: false, id: this.id };
+        return { content, done: false, id: this.countId };
     }
 };
 
-addBtn.addEventListener("click", (event) => {
-    event.preventDefault();
-    state.addTodo(state.createTodo(todoInput.value));
-    todoInput.value = "";
-    renderTodo(state);
-});
+const app = {
+    todosContainerElement: document.querySelector(".todos-container"),
+    todoEditModalElement: document.querySelector(".todo-edit-modal"),
+    todoInputElement: document.getElementById("todoInput"),
+    todoFormElement: document.querySelector(".todoForm"),
 
-const removeTodoHandel = (id) => {
-    state.removeTodo(id);
-    renderTodo(state);
-};
-
-const toggleTodoHandel = (id) => {
-    state.toggleTodo(id);
-    renderTodo(state);
-};
-
-const closeEditModal = () => {
-    state.editTodo.content = todoEdit.value
-    todoEditModal.style.display = "none";
-    renderTodo(state);
-};
-
-const editTodoHandel = (id) => {
-    state.editTodo = state.findTodo(id);
-    todoEdit.value = state.editTodo.content
-    todoEditModal.style.display = "grid";
-    renderTodo(state);
-};
-
-const renderTodo = (state) => {
-    let todoTemplate = (todo) => `<div class="todo ${todo.done && "todo-done"}">
-        <h2>${todo.content}</h2>
-        <div>
-            <button class="btn btn-toggle" onclick="toggleTodoHandel(${
-                todo.id
-            })">&#10004;</button>
-            <button class="btn btn-edit" onclick="editTodoHandel(${
-                todo.id
-            })">&#9998;</button>
-            <button class="btn btn-remove" onclick="removeTodoHandel(${
-                todo.id
-            })">X</button>
+    removeTodoHandel(id) {
+        state.removeTodo(id);
+        this.renderTodos(state);
+    },
+    toggleTodoHandel(id) {
+        state.toggleTodo(id);
+        this.renderTodos(state);
+    },
+    openEditModal(id) {
+        state.editableTodo = state.findTodo(id);
+        this.renderModal(state.editableTodo.content);
+        this.todoEditModalElement.style.display = "grid";
+    },
+    changeInputHandel(event) {
+        state.newContent = event.target.value;
+    },
+    addHandel(event) {
+        event.preventDefault();
+        state.newContent && state.addTodo();
+        state.newContent = "";
+        this.render(state);
+    },
+    closeEditModal() {
+        this.todoEditModalElement.style.display = "none";
+        this.renderTodos(state);
+    },
+    editTodoHandel(event) {
+        state.editableTodo.content = event.target.value;
+        this.renderTodos(state);
+    },
+    renderModal(content = null) {
+        this.todoEditModalElement.innerHTML = `<div class="todo">
+                <label for="todo-edit">Edit Todo:</label>
+                <input id="todo-edit" class="input-content" name="todo-edit" onchange="app.editTodoHandel(event)" value="${content}"/>
+                <div>
+                    <button class="btn btn-close" onclick="app.closeEditModal()">done</button>
+                </div>
+            </div>`;
+    },
+    renderForm(state) {
+        this.todoFormElement.innerHTML = `<div class="input-group">
+        <label for="todoInput">Add Todo:</label>
+        <input type="text" id="todoInput" class="input-content" name="todoInput" value="${state.newContent}" onchange="app.changeInputHandel(event)"/>
         </div>
-        </div>`;
-    todosContainer.innerHTML = state.todos
-        .map((todo) => {
-            return todoTemplate(todo);
-        })
-        .join("");
+            <button
+                id="addBtn"
+                name="addBtn"
+                onclick="app.addHandel(event)"
+                class="btn btn-add"
+            >
+                +
+            </button>`;
+    },
+    renderTodos(state) {
+        this.todosContainerElement.innerHTML = state.todos
+            .map((todo) => {
+                return `<div class="todo ${todo.done && "todo-done"}">
+            <h2>${todo.content}</h2>
+            <div class="btn-group">
+              
+                <button class="btn btn-toggle" onclick="app.toggleTodoHandel(${
+                    todo.id
+                })">&#10004;</button>
+                <button class="btn btn-edit" onclick="app.openEditModal(${
+                    todo.id
+                })">&#9998;</button>
+                <button class="btn btn-remove" onclick="app.removeTodoHandel(${
+                    todo.id
+                })">&#x1F5D1;</button>
+            </div>
+            </div>`;
+            })
+            .join("");
+    },
+    render(state) {
+        this.renderForm(state);
+        this.renderTodos(state);
+    }
 };
 
-renderTodo(state);
+app.render(state);
