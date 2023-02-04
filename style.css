@@ -102,6 +102,9 @@ main {
     place-items: center;
     font-size: 1.8rem;
 }
+.todo-edit-modal--show {
+    display: grid;
+}
 
 .todo-edit-modal .todo {
     display: grid;
