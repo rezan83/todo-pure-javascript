@@ -29,9 +29,6 @@ const state = {
     }
 };
 
-const save = () => {
-    localStorage.setItem("stateData", JSON.stringify(state.data));
-};
 const app = {
     todosContainerElement: document.querySelector(".todos-container"),
     todoEditModalContainerElement: document.querySelector(
@@ -39,7 +36,9 @@ const app = {
     ),
     todoInputElement: document.getElementById("todoInput"),
     todoFormElement: document.querySelector(".todoForm"),
-
+    save (){
+        localStorage.setItem("stateData", JSON.stringify(state.data));
+    },
     removeTodoHandel(id) {
         state.removeTodo(id);
         this.renderTodos(state);
