@@ -1,33 +1,37 @@
 const state = {
-    countId: 1,
-    editableTodo: null,
-    showModal:false,
-    newContent: "",
-    todos: [
-        { content: "Orange", done: false, id: -1 },
-        { content: "Apple", done: true, id: 0 }
-    ],
+    data: {
+        countId: 1,
+        editableTodo: null,
+        showModal: false,
+        newContent: "",
+        todos: [
+            { content: "Orange", done: false, id: -1 },
+            { content: "Apple", done: true, id: 0 }
+        ]
+    },
     addTodo() {
-        this.todos.unshift({
-            content: this.newContent,
+        this.data.todos.unshift({
+            content: this.data.newContent,
             done: false,
-            id: this.countId
+            id: this.data.countId
         });
-        this.countId++;
+        this.data.countId++;
     },
     removeTodo(id) {
-        this.todos = this.todos.filter((todo) => todo.id !== id);
+        this.data.todos = this.data.todos.filter((todo) => todo.id !== id);
     },
     toggleTodoIsDone(id) {
         let todo = this.findTodo(id);
         todo.done = !todo.done;
     },
     findTodo(id) {
-        return this.todos.find((todo) => todo.id === id);
+        return this.data.todos.find((todo) => todo.id === id);
     }
-
 };
 
+const save = () => {
+    localStorage.setItem("stateData", JSON.stringify(state.data));
+};
 const app = {
     todosContainerElement: document.querySelector(".todos-container"),
     todoEditModalContainerElement: document.querySelector(
@@ -45,30 +49,30 @@ const app = {
         this.renderTodos(state);
     },
     changeInputHandel(event) {
-        state.newContent = event.target.value;
+        state.data.newContent = event.target.value;
     },
     addHandel(event) {
         event.preventDefault();
-        state.newContent && state.addTodo();
-        state.newContent = "";
+        state.data.newContent && state.addTodo();
+        state.data.newContent = "";
         this.render(state);
     },
     openEditModal(id) {
-        state.showModal = true;
-        state.editableTodo = state.findTodo(id);
-        this.renderModal(state.editableTodo.content);
+        state.data.showModal = true;
+        state.data.editableTodo = state.findTodo(id);
+        this.renderModal(state.data.editableTodo.content);
     },
     closeEditModal() {
-        state.showModal = false;
+        state.data.showModal = false;
         this.renderModal();
     },
     editTodoHandel(event) {
-        state.editableTodo.content = event.target.value;
+        state.data.editableTodo.content = event.target.value;
         this.renderTodos(state);
     },
     renderModal(content = null) {
         this.todoEditModalContainerElement.innerHTML = `<div class="todo-edit-modal ${
-            state.showModal && "todo-edit-modal--show"
+            state.data.showModal && "todo-edit-modal--show"
         }">
     
         <div class="todo">
@@ -83,7 +87,7 @@ const app = {
     renderForm(state) {
         this.todoFormElement.innerHTML = `<div class="input-group">
         <label for="todoInput">Add Todo:</label>
-        <input type="text" id="todoInput" class="input-content" name="todoInput" value="${state.newContent}" onchange="app.changeInputHandel(event)"/>
+        <input type="text" id="todoInput" class="input-content" name="todoInput" value="${state.data.newContent}" onchange="app.changeInputHandel(event)"/>
         </div>
             <button
                 id="addBtn"
@@ -95,7 +99,7 @@ const app = {
             </button>`;
     },
     renderTodos(state) {
-        this.todosContainerElement.innerHTML = state.todos
+        this.todosContainerElement.innerHTML = state.data.todos
             .map((todo) => {
                 return `<div class="todo ${todo.done && "todo-done"}">
             <h2>${todo.content}</h2>
@@ -115,10 +119,15 @@ const app = {
             })
             .join("");
     },
+    init(state) {
+        if (localStorage.getItem("stateData")) {
+            state.data = JSON.parse(localStorage.getItem("stateData"));
+        }
+    },
     render(state) {
         this.renderForm(state);
         this.renderTodos(state);
     }
 };
-
+app.init(state);
 app.render(state);
