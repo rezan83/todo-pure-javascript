@@ -58,12 +58,28 @@ main {
     border: 1px solid gray;
     margin: 2rem 0;
     height: 10rem;
-    padding: 2rem;
-    display: flex;
+    display: grid;
+    grid-template: 1fr 1fr 1fr / 10fr 2fr 2rem ;
+    grid-template-areas: 
+    " . . grap"
+    " title btn-group grap"
+    " . . grap"; 
+    gap: 1rem;
     align-items: center;
-    justify-content: space-between;
+} 
+.todo > h2 {
+    grid-area: title;
+    padding: 1rem;
+}
+.todo .btn-grap {
+    grid-area: grap;
+    align-self:stretch;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .btn-group {
+    grid-area: btn-group;
     display: grid;
     grid-template: 1fr/1fr 1fr 1fr;
     gap: 1rem;

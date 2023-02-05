@@ -1,5 +1,6 @@
 const state = {
     data: {
+        movedId: null,
         countId: 1,
         editableTodo: null,
         showModal: false,
@@ -25,13 +26,26 @@ const state = {
         todo.done = !todo.done;
     },
     findTodo(id) {
-        return this.data.todos.find((todo) => todo.id === id);
+        return this.data.todos.find((todo) => todo.id === parseInt(id));
+    },
+    replace(replacedId) {
+        let movedId = this.data.movedId;
+        let moved = state.findTodo(movedId);
+        let replaced = state.findTodo(replacedId);
+        const replacedIndex = this.data.todos.findIndex(
+            (tod) => tod.id === replacedId
+        );
+        const movedIndex = this.data.todos.findIndex(
+            (tod) => tod.id === movedId
+        );
+        this.data.todos.splice(replacedIndex, 1, moved);
+        this.data.todos.splice(movedIndex, 1, replaced);
     },
     init() {
         if (localStorage.getItem("stateData")) {
             this.data = JSON.parse(localStorage.getItem("stateData"));
         }
-    },
+    }
 };
 
 const app = {
@@ -74,10 +88,25 @@ const app = {
         state.data.editableTodo.content = event.target.value;
         this.renderTodos(state);
     },
+    dragstartHandl(ev, movedId) {
+        state.data.movedId = movedId;
+        ev.dataTransfer.effectAllowed = "move";
+    },
+
+    dragoverHandl(ev) {
+        ev.preventDefault();
+        ev.dataTransfer.dropEffect = "move";
+    },
+
+    dropHandl(ev, replacedId) {
+        ev.preventDefault();
+        state.replace(parseInt(replacedId));
+        this.renderTodos(state);
+    },
     renderModal(content = null) {
         this.todoEditModalContainerElement.innerHTML = `<div class="todo-edit-modal ${
-                state.data.showModal && "todo-edit-modal--show"
-            }">
+            state.data.showModal && "todo-edit-modal--show"
+        }">
         
             <div class="todo">
                     <label for="todo-edit">Edit Todo:</label>
@@ -111,7 +140,11 @@ const app = {
     renderTodos(state) {
         this.todosContainerElement.innerHTML = state.data.todos
             .map((todo) => {
-                return `<div class="todo ${todo.done && "todo-done"}" key="${todo.id}">
+                return `<div draggable="true" ondrop="app.dropHandl(event,${
+                    todo.id
+                })"ondragover="app.dragoverHandl(event)" ondragstart="app.dragstartHandl(event,${
+                    todo.id
+                })" class="todo${todo.done ? " todo-done" : ""}"  >
             <h2>${todo.content}</h2>
             <div class="btn-group">
                 <button class="btn btn-toggle" onclick="app.toggleTodoIsDoneHandel(${
@@ -124,11 +157,13 @@ const app = {
                     todo.id
                 })">&#x1F5D1;</button>
             </div>
+            <button class="btn btn-grap">&#128770; &#128772;</button>
+
             </div>`;
             })
             .join("");
     },
-    
+
     render(state) {
         this.renderForm(state);
         this.renderTodos(state);
