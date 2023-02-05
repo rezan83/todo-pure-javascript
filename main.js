@@ -6,14 +6,19 @@ const state = {
         showModal: false,
         newContent: "",
         todos: [
-            { content: "Orange", done: false, id: -1 },
-            { content: "Apple", done: true, id: 0 }
+            { content: "Orange", done: false, id: -5 , periority: 1},
+            { content: "Apple", done: true, id: -4 ,  periority: 1},
+            { content: "Milk", done: false, id: -3 , periority: 1},
+            { content: "Banana", done: true, id: -2 ,  periority: 1},
+            { content: "Ananas", done: false, id: -1 , periority: 2},
+            { content: "Bonbon", done: true, id: 0 ,  periority: 2}
         ]
     },
     addTodo() {
         this.data.todos.unshift({
             content: this.data.newContent,
             done: false,
+            periority: 1,
             id: this.data.countId
         });
         this.data.countId++;
@@ -31,13 +36,18 @@ const state = {
     replace(replacedId) {
         let movedId = this.data.movedId;
         let moved = state.findTodo(movedId);
+        let movedPeriority = moved.periority
         let replaced = state.findTodo(replacedId);
+        let replacedPeriority = replaced.periority
+        replaced.periority = movedPeriority
+        moved.periority = replacedPeriority
         const replacedIndex = this.data.todos.findIndex(
             (tod) => tod.id === replacedId
         );
         const movedIndex = this.data.todos.findIndex(
             (tod) => tod.id === movedId
         );
+
         this.data.todos.splice(replacedIndex, 1, moved);
         this.data.todos.splice(movedIndex, 1, replaced);
     },
@@ -50,11 +60,13 @@ const state = {
 
 const app = {
     todosContainerElement: document.querySelector(".todos-container"),
+    urgentContainerElement: document.querySelector(".urgent-container"),
     todoEditModalContainerElement: document.querySelector(
         ".todo-edit-modal--container"
     ),
     todoInputElement: document.getElementById("todoInput"),
     todoFormElement: document.querySelector(".todoForm"),
+    
     save() {
         localStorage.setItem("stateData", JSON.stringify(state.data));
     },
@@ -88,18 +100,18 @@ const app = {
         state.data.editableTodo.content = event.target.value;
         this.renderTodos(state);
     },
-    dragstartHandl(ev, movedId) {
+    dragstartHandl(event, movedId) {
         state.data.movedId = movedId;
-        ev.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.effectAllowed = "move";
     },
 
-    dragoverHandl(ev) {
-        ev.preventDefault();
-        ev.dataTransfer.dropEffect = "move";
+    dragoverHandl(event) {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
     },
 
-    dropHandl(ev, replacedId) {
-        ev.preventDefault();
+    dropHandl(event, replacedId) {
+        event.preventDefault();
         state.replace(parseInt(replacedId));
         this.renderTodos(state);
     },
@@ -140,26 +152,56 @@ const app = {
     renderTodos(state) {
         this.todosContainerElement.innerHTML = state.data.todos
             .map((todo) => {
-                return `<div draggable="true" ondrop="app.dropHandl(event,${
-                    todo.id
-                })"ondragover="app.dragoverHandl(event)" ondragstart="app.dragstartHandl(event,${
-                    todo.id
-                })" class="todo${todo.done ? " todo-done" : ""}"  >
-            <h2>${todo.content}</h2>
-            <div class="btn-group">
-                <button class="btn btn-toggle" onclick="app.toggleTodoIsDoneHandel(${
-                    todo.id
-                })">&#10004;</button>
-                <button class="btn btn-edit" onclick="app.openEditModal(${
-                    todo.id
-                })">&#9998;</button>
-                <button class="btn btn-remove" onclick="app.removeTodoHandel(${
-                    todo.id
-                })">&#x1F5D1;</button>
-            </div>
-            <button class="btn btn-grap">&#128770; &#128772;</button>
-
-            </div>`;
+                if (todo.periority === 1) {
+                    
+                    return `<div draggable="true" ondrop="app.dropHandl(event,${
+                        todo.id
+                    })"ondragover="app.dragoverHandl(event)" ondragstart="app.dragstartHandl(event,${
+                        todo.id
+                    })" class="todo${todo.done ? " todo-done" : ""}"  >
+                <h2>${todo.content}</h2>
+                <div class="btn-group">
+                    <button class="btn btn-toggle" onclick="app.toggleTodoIsDoneHandel(${
+                        todo.id
+                    })">&#10004;</button>
+                    <button class="btn btn-edit" onclick="app.openEditModal(${
+                        todo.id
+                    })">&#9998;</button>
+                    <button class="btn btn-remove" onclick="app.removeTodoHandel(${
+                        todo.id
+                    })">&#x1F5D1;</button>
+                </div>
+                <button class="btn btn-grap">&#128770; &#128772;</button>
+    
+                </div>`;
+                }
+            })
+            .join("");
+            this.urgentContainerElement.innerHTML = state.data.todos
+            .map((todo) => {
+                if (todo.periority === 2) {
+                    
+                    return `<div draggable="true" ondrop="app.dropHandl(event,${
+                        todo.id
+                    })"ondragover="app.dragoverHandl(event)" ondragstart="app.dragstartHandl(event,${
+                        todo.id
+                    })" class="todo${todo.done ? " todo-done" : ""}"  >
+                <h2>${todo.content}</h2>
+                <div class="btn-group">
+                    <button class="btn btn-toggle" onclick="app.toggleTodoIsDoneHandel(${
+                        todo.id
+                    })">&#10004;</button>
+                    <button class="btn btn-edit" onclick="app.openEditModal(${
+                        todo.id
+                    })">&#9998;</button>
+                    <button class="btn btn-remove" onclick="app.removeTodoHandel(${
+                        todo.id
+                    })">&#x1F5D1;</button>
+                </div>
+                <button class="btn btn-grap">&#128770; &#128772;</button>
+    
+                </div>`;
+                }
             })
             .join("");
     },

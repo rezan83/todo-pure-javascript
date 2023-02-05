@@ -27,6 +27,9 @@ main {
     display: grid;
     place-items: center;
 }
+h2{
+    margin: 1rem 0;
+}
 .todos-app {
     margin: 2rem 0;
     width: 90%;
@@ -53,6 +56,10 @@ main {
 .todoForm label {
     font-size: 2rem;
     padding: 1rem;
+}
+.todos-periority {
+    display: flex;
+    gap: 2rem;
 }
 .todo {
     border: 1px solid gray;
