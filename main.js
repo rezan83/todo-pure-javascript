@@ -12,10 +12,10 @@ const state = {
             { content: "Banana", done: true, id: -2, periority: 1 },
             { content: "Energy Drink", done: false, id: -1, periority: 2 },
             { content: "Mars", done: false, id: -6, periority: 2 },
-            { content: "Bonbon", done: true, id: -6, periority: 2 },
-            { content: "Charger", done: false, id: -7, periority: 3 },
-            { content: "Battery", done: false, id: -8, periority: 3 },
-            { content: "Cabel", done: true, id: -8, periority: 3 }
+            { content: "Bonbon", done: true, id: -7, periority: 2 },
+            { content: "Charger", done: false, id: -8, periority: 3 },
+            { content: "Battery", done: false, id: -9, periority: 3 },
+            { content: "Cabel", done: true, id: -10, periority: 3 }
         ]
     },
     addTodo() {
@@ -37,10 +37,14 @@ const state = {
     findTodo(id) {
         return this.data.todos.find((todo) => todo.id === parseInt(id));
     },
+    periorityArea(periorityNumber) {
+        let movedId = this.data.movedId;
+        let moved = state.findTodo(movedId);
+        moved.periority = periorityNumber;
+    },
     replace(replacedId) {
         let movedId = this.data.movedId;
         let moved = state.findTodo(movedId);
-        // let movedPeriority = moved.periority
         if (moved) {
             let replaced = state.findTodo(replacedId);
             const replacedIndex = this.data.todos.findIndex(
@@ -58,9 +62,6 @@ const state = {
             } else {
                 this.data.todos.splice(replacedIndex, 0, moved);
             }
-            moved.periority = replaced.periority;
-
-            this.data.movedId = null;
         }
     },
     init() {
@@ -114,7 +115,7 @@ const app = {
         this.renderTodos(state);
     },
     dragstartHandl(event, movedId) {
-        state.data.movedId = movedId;
+        state.data.movedId = parseInt(movedId);
         event.dataTransfer.effectAllowed = "move";
     },
 
@@ -123,7 +124,18 @@ const app = {
         event.dataTransfer.dropEffect = "move";
     },
 
-    dropHandl(event, replacedId) {
+    dropHandl(event, periorityNumber) {
+        event.preventDefault();
+        state.periorityArea(periorityNumber);
+        this.renderTodos(state);
+    },
+
+    dragoverTodoHandl(event) {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
+    },
+
+    dropTodoHandl(event, replacedId) {
         event.preventDefault();
         state.replace(parseInt(replacedId));
         this.renderTodos(state);
@@ -169,9 +181,9 @@ const app = {
                 : todo.periority === 2
                 ? "normal"
                 : "urgent";
-        return `<div draggable="true" ondrop="app.dropHandl(event,${
+        return `<div draggable="true" ondrop="app.dropTodoHandl(event,${
             todo.id
-        })"ondragover="app.dragoverHandl(event)" ondragstart="app.dragstartHandl(event,${
+        })"ondragover="app.dragoverTodoHandl(event)" ondragstart="app.dragstartHandl(event,${
             todo.id
         })" class="todo${todo.done ? " todo-done" : ""} ${periorityClass}"  >
             <h3>${todo.content}</h3>

@@ -18,16 +18,16 @@
                 <div class="todo-edit-modal--container"></div>
                 <form class="todoForm"></form>
                 <div class="todos-periority">
-                    <div class="todos-low">
+                    <div class="todos-low" ondrop="app.dropHandl(event,1)" ondragover="app.dragoverHandl(event)">
                         <h2 class="low">Low</h2>
                         <div class="todos-container"></div>
                     </div>
 
-                    <div class="todos-normal">
+                    <div class="todos-normal" ondrop="app.dropHandl(event,2)" ondragover="app.dragoverHandl(event)">
                         <h2 class="normal">Normal</h2>
                         <div class="normal-container"></div>
                     </div>
-                    <div class="todos-urgent">
+                    <div class="todos-urgent" ondrop="app.dropHandl(event,3)" ondragover="app.dragoverHandl(event)">
                         <h2 class="urgent">Urgent</h2>
                         <div class="urgent-container"></div>
                     </div>
