@@ -6,16 +6,20 @@ const state = {
         showModal: false,
         newContent: "",
         todos: [
-            { content: "Orange", done: false, id: -5 , periority: 1},
-            { content: "Apple", done: true, id: -4 ,  periority: 1},
-            { content: "Milk", done: false, id: -3 , periority: 1},
-            { content: "Banana", done: true, id: -2 ,  periority: 1},
-            { content: "Ananas", done: false, id: -1 , periority: 2},
-            { content: "Bonbon", done: true, id: 0 ,  periority: 2}
+            { content: "Orange", done: false, id: -5, periority: 1 },
+            { content: "Apple", done: true, id: -4, periority: 1 },
+            { content: "Milk", done: false, id: -3, periority: 1 },
+            { content: "Banana", done: true, id: -2, periority: 1 },
+            { content: "Energy Drink", done: false, id: -1, periority: 2 },
+            { content: "Mars", done: false, id: -6, periority: 2 },
+            { content: "Bonbon", done: true, id: -6, periority: 2 },
+            { content: "Charger", done: false, id: -7, periority: 3 },
+            { content: "Battery", done: false, id: -8, periority: 3 },
+            { content: "Cabel", done: true, id: -8, periority: 3 }
         ]
     },
     addTodo() {
-        this.data.todos.unshift({
+        this.data.todos.push({
             content: this.data.newContent,
             done: false,
             periority: 1,
@@ -36,20 +40,28 @@ const state = {
     replace(replacedId) {
         let movedId = this.data.movedId;
         let moved = state.findTodo(movedId);
-        let movedPeriority = moved.periority
-        let replaced = state.findTodo(replacedId);
-        let replacedPeriority = replaced.periority
-        replaced.periority = movedPeriority
-        moved.periority = replacedPeriority
-        const replacedIndex = this.data.todos.findIndex(
-            (tod) => tod.id === replacedId
-        );
-        const movedIndex = this.data.todos.findIndex(
-            (tod) => tod.id === movedId
-        );
+        // let movedPeriority = moved.periority
+        if (moved) {
+            let replaced = state.findTodo(replacedId);
+            const replacedIndex = this.data.todos.findIndex(
+                (todo) => todo.id === replacedId
+            );
+            const movedIndex = this.data.todos.findIndex(
+                (todo) => todo.id === movedId
+            );
 
-        this.data.todos.splice(replacedIndex, 1, moved);
-        this.data.todos.splice(movedIndex, 1, replaced);
+            // delete the moved todo
+            this.data.todos.splice(movedIndex, 1);
+            // place the moved todo
+            if (moved.periority < replaced.periority) {
+                this.data.todos.splice(replacedIndex - 1, 0, moved);
+            } else {
+                this.data.todos.splice(replacedIndex, 0, moved);
+            }
+            moved.periority = replaced.periority;
+
+            this.data.movedId = null;
+        }
     },
     init() {
         if (localStorage.getItem("stateData")) {
@@ -61,12 +73,13 @@ const state = {
 const app = {
     todosContainerElement: document.querySelector(".todos-container"),
     urgentContainerElement: document.querySelector(".urgent-container"),
+    normalContainerElement: document.querySelector(".normal-container"),
     todoEditModalContainerElement: document.querySelector(
         ".todo-edit-modal--container"
     ),
     todoInputElement: document.getElementById("todoInput"),
     todoFormElement: document.querySelector(".todoForm"),
-    
+
     save() {
         localStorage.setItem("stateData", JSON.stringify(state.data));
     },
@@ -149,58 +162,53 @@ const app = {
                 +
             </button>`;
     },
+    renderTodo(todo) {
+        let periorityClass =
+            todo.periority === 1
+                ? "low"
+                : todo.periority === 2
+                ? "normal"
+                : "urgent";
+        return `<div draggable="true" ondrop="app.dropHandl(event,${
+            todo.id
+        })"ondragover="app.dragoverHandl(event)" ondragstart="app.dragstartHandl(event,${
+            todo.id
+        })" class="todo${todo.done ? " todo-done" : ""} ${periorityClass}"  >
+            <h3>${todo.content}</h3>
+            <div class="btn-group">
+                <button class="btn btn-toggle" onclick="app.toggleTodoIsDoneHandel(${
+                    todo.id
+                })">&#10004;</button>
+                <button class="btn btn-edit" onclick="app.openEditModal(${
+                    todo.id
+                })">&#9998;</button>
+                <button class="btn btn-remove" onclick="app.removeTodoHandel(${
+                    todo.id
+                })">&#x1F5D1;</button>
+            </div>
+            <button class="btn btn-grap">&#128770; &#128772;</button>
+
+            </div>`;
+    },
     renderTodos(state) {
         this.todosContainerElement.innerHTML = state.data.todos
             .map((todo) => {
                 if (todo.periority === 1) {
-                    
-                    return `<div draggable="true" ondrop="app.dropHandl(event,${
-                        todo.id
-                    })"ondragover="app.dragoverHandl(event)" ondragstart="app.dragstartHandl(event,${
-                        todo.id
-                    })" class="todo${todo.done ? " todo-done" : ""}"  >
-                <h2>${todo.content}</h2>
-                <div class="btn-group">
-                    <button class="btn btn-toggle" onclick="app.toggleTodoIsDoneHandel(${
-                        todo.id
-                    })">&#10004;</button>
-                    <button class="btn btn-edit" onclick="app.openEditModal(${
-                        todo.id
-                    })">&#9998;</button>
-                    <button class="btn btn-remove" onclick="app.removeTodoHandel(${
-                        todo.id
-                    })">&#x1F5D1;</button>
-                </div>
-                <button class="btn btn-grap">&#128770; &#128772;</button>
-    
-                </div>`;
+                    return this.renderTodo(todo);
                 }
             })
             .join("");
-            this.urgentContainerElement.innerHTML = state.data.todos
+        this.normalContainerElement.innerHTML = state.data.todos
             .map((todo) => {
                 if (todo.periority === 2) {
-                    
-                    return `<div draggable="true" ondrop="app.dropHandl(event,${
-                        todo.id
-                    })"ondragover="app.dragoverHandl(event)" ondragstart="app.dragstartHandl(event,${
-                        todo.id
-                    })" class="todo${todo.done ? " todo-done" : ""}"  >
-                <h2>${todo.content}</h2>
-                <div class="btn-group">
-                    <button class="btn btn-toggle" onclick="app.toggleTodoIsDoneHandel(${
-                        todo.id
-                    })">&#10004;</button>
-                    <button class="btn btn-edit" onclick="app.openEditModal(${
-                        todo.id
-                    })">&#9998;</button>
-                    <button class="btn btn-remove" onclick="app.removeTodoHandel(${
-                        todo.id
-                    })">&#x1F5D1;</button>
-                </div>
-                <button class="btn btn-grap">&#128770; &#128772;</button>
-    
-                </div>`;
+                    return this.renderTodo(todo);
+                }
+            })
+            .join("");
+        this.urgentContainerElement.innerHTML = state.data.todos
+            .map((todo) => {
+                if (todo.periority === 3) {
+                    return this.renderTodo(todo);
                 }
             })
             .join("");

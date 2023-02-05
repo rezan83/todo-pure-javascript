@@ -27,8 +27,10 @@ main {
     display: grid;
     place-items: center;
 }
-h2{
+h2 {
     margin: 1rem 0;
+    padding: 1rem;
+    text-align: center;
 }
 .todos-app {
     margin: 2rem 0;
@@ -58,7 +60,9 @@ h2{
     padding: 1rem;
 }
 .todos-periority {
-    display: flex;
+    margin-top: 2rem;
+    display: grid;
+    grid-template: 1fr/1fr 1fr 1fr;
     gap: 2rem;
 }
 .todo {
@@ -66,21 +70,33 @@ h2{
     margin: 2rem 0;
     height: 10rem;
     display: grid;
-    grid-template: 1fr 1fr 1fr / 10fr 2fr 2rem ;
-    grid-template-areas: 
-    " . . grap"
-    " title btn-group grap"
-    " . . grap"; 
+    grid-template: 1fr 1fr 1fr / 10fr 2fr 2rem;
+    grid-template-areas:
+        " . . grap"
+        " title btn-group grap"
+        " . . grap";
     gap: 1rem;
     align-items: center;
-} 
-.todo > h2 {
+}
+.todo:hover {
+    box-shadow: 1px 1px 10px gray;
+}
+.low {
+    background-color: aliceblue;
+}
+.normal {
+    background-color: hsl(56, 100%, 97%);
+}
+.urgent {
+    background-color: hsl(16, 100%, 97%);
+}
+.todo > h3 {
     grid-area: title;
     padding: 1rem;
 }
 .todo .btn-grap {
     grid-area: grap;
-    align-self:stretch;
+    align-self: stretch;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -105,11 +121,11 @@ h2{
     background-color: hsl(5, 100%, 75%);
 }
 
-.todo-done {
+.todo.todo-done {
     background-color: gray;
 }
 
-.todo-done .btn-toggle {
+.todo.todo-done .btn-toggle {
     background-color: hsl(0, 1%, 25%);
 }
 
