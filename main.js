@@ -15,7 +15,7 @@ const state = {
             { content: "Bonbon", done: true, id: -7, periority: 2 },
             { content: "Charger", done: false, id: -8, periority: 3 },
             { content: "Battery", done: false, id: -9, periority: 3 },
-            { content: "Cabel", done: true, id: -10, periority: 3 }
+            { content: "Cabel", done: true, id: -10, periority: 3 },
         ]
     },
     addTodo() {
@@ -38,20 +38,19 @@ const state = {
         return this.data.todos.find((todo) => todo.id === parseInt(id));
     },
     periorityArea(periorityNumber) {
-        let movedId = this.data.movedId;
-        let moved = state.findTodo(movedId);
+        let moved = state.findTodo(this.data.movedId);
         moved.periority = periorityNumber;
     },
     replace(replacedId) {
-        let movedId = this.data.movedId;
-        let moved = state.findTodo(movedId);
+        
+        let moved = state.findTodo(this.data.movedId);
         if (moved) {
             let replaced = state.findTodo(replacedId);
             const replacedIndex = this.data.todos.findIndex(
                 (todo) => todo.id === replacedId
             );
             const movedIndex = this.data.todos.findIndex(
-                (todo) => todo.id === movedId
+                (todo) => todo.id === this.data.movedId
             );
 
             // delete the moved todo
@@ -68,6 +67,7 @@ const state = {
         if (localStorage.getItem("stateData")) {
             this.data = JSON.parse(localStorage.getItem("stateData"));
         }
+        this.data.todos.sort((todo1, todo2 )=> todo1.periority-todo2.periority)
     }
 };
 

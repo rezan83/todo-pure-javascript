@@ -80,6 +80,7 @@ h2 {
 }
 .todo:hover {
     box-shadow: 1px 1px 10px gray;
+    cursor: move;
 }
 .low {
     background-color: aliceblue;
@@ -100,6 +101,7 @@ h2 {
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: move;
 }
 .btn-group {
     grid-area: btn-group;
